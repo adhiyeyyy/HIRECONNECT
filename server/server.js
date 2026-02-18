@@ -11,28 +11,46 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cors());
 
-// Serve static files from frontend directory
-app.use(express.static(path.join(__dirname, "../frontend")));
-
 // Database Connection
-mongoose.connect("mongodb+srv://antigravity:ANTIGRAVITY123@cluster1.c62bavc.mongodb.net/hireconnect")
-    .then(() => console.log("MongoDB Connected"))
-    .catch(err => console.log(err));
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://antigravity:ANTIGRAVITY123@cluster1.c62bavc.mongodb.net/hireconnect";
+
+// Enhanced MongoDB Connection logic for Serverless
+const connectDB = async () => {
+    if (mongoose.connection.readyState >= 1) {
+        console.log("Using existing MongoDB connection");
+        return;
+    }
+
+    console.log("Attempting to connect to MongoDB...");
+    try {
+        await mongoose.connect(MONGODB_URI, {
+            serverSelectionTimeoutMS: 5000,
+        });
+        mongoose.set('bufferCommands', false); // Disable buffering globally once connected
+        console.log("MongoDB Connected Successfully");
+    } catch (err) {
+        console.error("MongoDB Connection Error Details:", {
+            message: err.message,
+            code: err.code,
+            name: err.name
+        });
+        // Don't throw, let the app handle it or retry later
+    }
+};
+
+// Connect immediately on startup (for non-serverless environments)
+connectDB();
+
+// Middleware to ensure DB is connected for every request (essential for serverless)
+app.use(async (req, res, next) => {
+    await connectDB();
+    next();
+});
 
 // Routes
 app.use("/api/jobs", require("./routes/jobs"));
 app.use("/api/payments", require("./routes/payments"));
 app.use("/api/users", require("./routes/users"));
-
-// Specific routes for cleaner URLs (optional but nice)
-app.get("/login", (req, res) => res.sendFile(path.join(__dirname, "../frontend/login.html")));
-app.get("/browse", (req, res) => res.sendFile(path.join(__dirname, "../frontend/browse.html")));
-app.get("/post", (req, res) => res.sendFile(path.join(__dirname, "../frontend/post.html")));
-app.get("/details", (req, res) => res.sendFile(path.join(__dirname, "../frontend/details.html")));
-app.get("/payment", (req, res) => res.sendFile(path.join(__dirname, "../frontend/payment.html")));
-app.get("/signup", (req, res) => res.sendFile(path.join(__dirname, "../frontend/signup.html")));
-app.get("/admin", (req, res) => res.sendFile(path.join(__dirname, "../frontend/admin.html")));
-app.get("/admin-login", (req, res) => res.sendFile(path.join(__dirname, "../frontend/admin_login.html")));
 
 // Admin Authentication Route
 app.post("/api/admin/login", (req, res) => {

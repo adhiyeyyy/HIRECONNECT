@@ -10,19 +10,46 @@
             "use": "@vercel/static"
         }
     ],
-    "routes": [
+    "rewrites": [
         {
-            "src": "/api/(.*)",
-            "dest": "server/server.js"
+            "source": "/api/(.*)",
+            "destination": "/server/server.js"
         },
         {
-            "src": "/(login|browse|post|details|payment|signup|admin|admin-login)",
-            "dest": "server/server.js"
+            "source": "/login",
+            "destination": "/frontend/login.html"
         },
         {
-            "src": "/(.*)",
-            "dest": "frontend/$1",
-            "check": true
+            "source": "/browse",
+            "destination": "/frontend/browse.html"
+        },
+        {
+            "source": "/post",
+            "destination": "/frontend/post.html"
+        },
+        {
+            "source": "/details",
+            "destination": "/frontend/details.html"
+        },
+        {
+            "source": "/payment",
+            "destination": "/frontend/payment.html"
+        },
+        {
+            "source": "/signup",
+            "destination": "/frontend/signup.html"
+        },
+        {
+            "source": "/admin",
+            "destination": "/frontend/admin.html"
+        },
+        {
+            "source": "/admin-login",
+            "destination": "/frontend/admin_login.html"
+        },
+        {
+            "source": "/(.*)",
+            "destination": "/frontend/$1"
         }
     ]
 }

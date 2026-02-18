@@ -2,7 +2,13 @@
 
 // Check authentication
 function checkAuth() {
-    const user = JSON.parse(localStorage.getItem('user'));
+    let user = null;
+    try {
+        const stored = localStorage.getItem('user');
+        if (stored) user = JSON.parse(stored);
+    } catch (e) {
+        console.error('Failed to parse user data', e);
+    }
     const authLink = document.getElementById('authLink');
     if (authLink) {
         if (user) {

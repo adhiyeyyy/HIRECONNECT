@@ -66,17 +66,17 @@
                     body: JSON.stringify({ email, password })
                 });
 
+                const data = await response.json().catch(() => ({ error: 'Invalid server response' }));
+
                 if (response.ok) {
-                    const user = await response.json();
-                    localStorage.setItem('user', JSON.stringify(user));
+                    localStorage.setItem('user', JSON.stringify(data));
                     window.location.href = 'index.html';
                 } else {
-                    const data = await response.json();
                     alert(data.error || 'Login failed');
                 }
             } catch (error) {
-                console.error('Error:', error);
-                alert('Something went wrong');
+                console.error('Login Error:', error);
+                alert('Connection error: ' + error.message);
             }
         });
     </script>
