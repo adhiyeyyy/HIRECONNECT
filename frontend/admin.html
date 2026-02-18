@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - HireConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-slate-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-slate-800">HireConnect Admin</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm font-medium text-slate-500 uppercase tracking-widest hidden sm:inline">Control
+                        Panel</span>
+                    <a href="index.html" class="text-slate-600 hover:text-teal-600 font-medium text-sm">Site Home</a>
+                    <button onclick="logoutAdmin()"
+                        class="bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-600 px-3 py-1.5 rounded-md text-sm font-bold transition-colors">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div class="mb-10">
+            <h1 class="text-3xl font-extrabold text-slate-900 font-brand">Administrator Console</h1>
+            <p class="text-slate-500 mt-2 font-medium">Manage verifications and monitor active job postings.</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex space-x-1 bg-slate-100 p-1.5 rounded-2xl mb-10 max-w-sm">
+            <button id="tab-pending" onclick="switchTab('pending')"
+                class="flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all bg-white shadow-sm text-teal-700">
+                Pending
+            </button>
+            <button id="tab-active" onclick="switchTab('active')"
+                class="flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-slate-700">
+                Active Jobs
+            </button>
+        </div>
+
+        <div id="pending-section">
+            <div id="loading-state" class="text-center py-20">
+                <div
+                    class="animate-spin inline-block w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full mb-4">
+                </div>
+                <p class="text-slate-500 font-medium tracking-tight">Fetching pending verifications...</p>
+            </div>
+            <div id="no-data" class="hidden text-center py-20 card border-dashed border-2">
+                <h2 class="text-xl font-bold text-slate-900">All caught up!</h2>
+                <p class="text-slate-500 mt-2">No pending payments at the moment.</p>
+            </div>
+            <div id="payments-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+
+        <div id="active-jobs-section" class="hidden">
+            <div id="active-jobs-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Security Check
+        const adminToken = sessionStorage.getItem('adminToken');
+        if (!adminToken) {
+            window.location.href = 'admin-login';
+        }
+
+        async function logoutAdmin() {
+            sessionStorage.removeItem('adminToken');
+            window.location.href = 'index.html';
+        }
+
+        async function fetchPendingPayments() {
+            try {
+                const response = await fetch('/api/payments/pending');
+                const payments = await response.json();
+
+                document.getElementById('loading-state').classList.add('hidden');
+                const grid = document.getElementById('payments-grid');
+                const noData = document.getElementById('no-data');
+
+                grid.innerHTML = '';
+
+                if (payments.length === 0) {
+                    noData.classList.remove('hidden');
+                    return;
+                }
+
+                noData.classList.add('hidden');
+
+                payments.forEach(payment => {
+                    const card = document.createElement('div');
+                    card.className = 'card p-6 flex flex-col justify-between hover:shadow-lg transition-shadow duration-300';
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${payment.purpose === 'post_job' ? 'bg-orange-100 text-orange-800' : 'bg-blue-100 text-blue-800'} uppercase tracking-wider">
+                                    ${payment.purpose.replace('_', ' ')}
+                                </span>
+                                <p class="text-xs text-slate-400">${new Date(payment.createdAt).toLocaleDateString()}</p>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Payer Email</p>
+                                    <p class="text-sm font-bold text-slate-900 truncate">${payment.email}</p>
+                                </div>
+                                
+                                <div>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Transaction ID (UTR)</p>
+                                    <p class="text-lg font-black text-teal-600 font-mono tracking-tighter">${payment.utr || 'NOT PROVIDED'}</p>
+                                </div>
+                                
+                                <div>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Amount</p>
+                                    <p class="text-sm font-bold text-slate-900">₹${payment.amount}</p>
+                                </div>
+
+                                ${payment.jobId ? `
+                                <div>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Associated Job ID</p>
+                                    <p class="text-[10px] font-mono text-slate-500">${payment.jobId}</p>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                        
+                        <button onclick="verifyPayment('${payment._id}')" class="mt-8 btn-primary w-full py-3 text-sm flex items-center justify-center space-x-2">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Approve & Verify</span>
+                        </button>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Failed to fetch payments:', error);
+                document.getElementById('loading-state').innerHTML = '<p class="text-red-500 font-bold">Error loading data. Check console.</p>';
+            }
+        }
+
+        async function verifyPayment(id) {
+            if (!confirm('Are you sure you want to verify this payment? This will immediately publish the associated job/details.')) return;
+
+            try {
+                const response = await fetch(`/api/payments/verify/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    alert('Payment Verified Successfully!');
+                    fetchPendingPayments(); // Refresh list
+                } else {
+                    const data = await response.json();
+                    alert('Verification failed: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Verification error:', error);
+                alert('Connection error during verification.');
+            }
+        }
+
+        async function fetchActiveJobs() {
+            try {
+                const response = await fetch('/api/jobs');
+                const jobs = await response.json();
+                const grid = document.getElementById('active-jobs-grid');
+                grid.innerHTML = '';
+
+                jobs.forEach(job => {
+                    const card = document.createElement('div');
+                    card.className = 'card p-6 flex flex-col justify-between border-slate-100 hover:border-red-100 transition-colors';
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-700">LIVE</span>
+                                <p class="text-xs text-slate-400 font-bold tracking-tighter">${new Date(job.createdAt).toLocaleDateString()}</p>
+                            </div>
+                            <h3 class="text-lg font-extrabold text-slate-900 mb-2 truncate">${job.jobTitle}</h3>
+                            <p class="text-xs font-bold text-slate-500 mb-4">${job.providerName}</p>
+                            <div class="flex items-center space-x-2 text-slate-400">
+                                <span class="text-[10px] font-mono bg-slate-50 px-2 py-1 rounded border border-slate-100">ID: ${job._id.slice(-6)}</span>
+                            </div>
+                        </div>
+                        <button onclick="deleteJob('${job._id}')" class="mt-8 bg-white border-2 border-slate-100 text-red-600 hover:bg-red-50 hover:border-red-200 py-3 rounded-xl text-sm font-black transition-all">
+                            Delete Job
+                        </button>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Failed to fetch active jobs:', error);
+            }
+        }
+
+        async function deleteJob(id) {
+            if (!confirm('EXTREMELY IMPORTANT: Are you sure you want to PERMANENTLY DELETE this job? This action cannot be undone.')) return;
+
+            try {
+                const response = await fetch(`/api/jobs/${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    alert('Job Deleted successfully.');
+                    fetchActiveJobs();
+                } else {
+                    const data = await response.json();
+                    alert('Deletion failed: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Delete error:', error);
+                alert('Connection error during deletion.');
+            }
+        }
+
+        function switchTab(tab) {
+            const pendingSec = document.getElementById('pending-section');
+            const activeSec = document.getElementById('active-jobs-section');
+            const pBtn = document.getElementById('tab-pending');
+            const aBtn = document.getElementById('tab-active');
+
+            if (tab === 'pending') {
+                pendingSec.classList.remove('hidden');
+                activeSec.classList.add('hidden');
+                pBtn.className = 'flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all bg-white shadow-sm text-teal-700';
+                aBtn.className = 'flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-slate-700';
+                fetchPendingPayments();
+            } else {
+                pendingSec.classList.add('hidden');
+                activeSec.classList.remove('hidden');
+                aBtn.className = 'flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all bg-white shadow-sm text-teal-700';
+                pBtn.className = 'flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-slate-700';
+                fetchActiveJobs();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchPendingPayments);
+    </script>
+</body>
+
+</html>

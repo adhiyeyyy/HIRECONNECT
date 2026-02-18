@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HireConnect - CEP | Campus Job Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .font-brand {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-clamp: 2;
+        }
+
+        .bg-pattern {
+            background-image: radial-gradient(circle at 2px 2px, #f1f5f9 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 bg-pattern">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="p-2 bg-teal-50 rounded-lg">
+                        <svg class="w-8 h-8 text-teal-700" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 16H4V8h16v12zM12 10l-4 4 1.4 1.4 2.6-2.6 2.6 2.6 1.4-1.4-4-4z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="text-2xl font-bold text-slate-800 font-brand">HireConnect</span>
+                        <span class="ml-2 text-sm font-semibold text-slate-400 hidden lg:inline tracking-tight">CEP -
+                            College of Engineering Perumon</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="login.html" id="authLink"
+                        class="text-slate-600 hover:text-teal-700 font-semibold transition-colors">Login</a>
+                    <a href="admin.html"
+                        class="bg-slate-800 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-900 transition-all shadow-sm">Admin</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero & Search Section -->
+    <section class="hero-gradient pt-12 pb-16 px-4">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <h1 class="text-4xl lg:text-6xl font-extrabold text-slate-900 leading-[1.15] font-brand">
+                    Find or Post <span class="text-teal-700">Jobs</span><br>
+                    Within Your <span class="text-teal-900">College</span>
+                </h1>
+                <p class="mt-6 text-lg text-slate-500 max-w-lg leading-relaxed font-medium">
+                    Connect with reliable students and staff at CEP - College of Engineering Perumon for any
+                    college-related job needs.
+                </p>
+
+                <!-- Action Buttons -->
+                <div class="mt-8 flex flex-wrap gap-4">
+                    <a href="post.html" class="btn-primary space-x-2 text-lg px-8 py-4">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        <span>Post a Job</span>
+                        <svg class="w-4 h-4 ml-1 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="hidden lg:block relative">
+                <!-- High-quality Local Illustration -->
+                <div class="w-full h-auto transform hover:scale-105 transition-transform duration-500">
+                    <img src="assets/hero.png" alt="Students Working Together"
+                        class="w-full h-auto rounded-[40px] shadow-2xl border-8 border-white/50">
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Bar Card -->
+        <div class="max-w-6xl mx-auto mt-12">
+            <div
+                class="bg-white p-3 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 flex flex-col md:flex-row gap-3">
+                <div class="flex-1 relative">
+                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="Search for jobs..."
+                        class="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-xl focus:ring-2 focus:ring-teal-500 font-medium">
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <select id="jobTypeSelect"
+                        class="bg-slate-50 border-none rounded-xl px-4 py-4 text-sm font-bold text-slate-600 focus:ring-2 focus:ring-teal-500 min-w-[140px]">
+                        <option value="">Job Type</option>
+                        <option value="Full-time">Full-time</option>
+                        <option value="Part-time">Part-time</option>
+                        <option value="One-time Task">One-time Task</option>
+                        <option value="Freelance">Freelance</option>
+                    </select>
+                    <select id="categorySelect"
+                        class="bg-slate-50 border-none rounded-xl px-4 py-4 text-sm font-bold text-slate-600 focus:ring-2 focus:ring-teal-500 min-w-[140px]">
+                        <option value="">Category</option>
+                        <option value="Data Entry">Data Entry</option>
+                        <option value="Event Assistance">Event Assistance</option>
+                        <option value="Technical">Technical</option>
+                        <option value="Creative">Creative</option>
+                        <option value="Delivery">Delivery</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <button onclick="handleSearch()"
+                        class="bg-[#004B44] text-white px-10 py-4 rounded-xl font-bold hover:bg-[#003a35] transition-all active:scale-95">Search</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <main class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+            <!-- Job Listings Column -->
+            <div class="lg:col-span-2 space-y-8">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-extrabold text-slate-900 flex items-center font-brand">
+                        <span class="mr-3">🚀</span> Latest Job Listings
+                    </h2>
+                    <a href="browse.html" class="text-teal-700 font-bold text-sm hover:underline">View All</a>
+                </div>
+
+                <div id="job-preview-container" class="space-y-6">
+                    <!-- Dynamic Jobs -->
+                    <div class="animate-pulse space-y-4">
+                        <div class="h-32 bg-slate-100 rounded-2xl"></div>
+                        <div class="h-32 bg-slate-100 rounded-2xl"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-8">
+                <!-- For Job Seekers Box -->
+                <div class="card p-8 bg-white border border-slate-100 shadow-xl shadow-slate-200/50">
+                    <div class="flex items-center space-x-2 mb-6">
+                        <div class="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-extrabold text-slate-900 font-brand">For Job Seekers</h3>
+                    </div>
+                    <div class="w-full h-48 bg-teal-50 rounded-3xl mb-8 overflow-hidden border border-teal-100/50">
+                        <img src="assets/seekers.png" alt="For Job Seekers" class="w-full h-full object-cover">
+                    </div>
+                    <h4 class="text-xl font-extrabold text-slate-900 mb-3 font-brand">For Job Seekers</h4>
+                    <p class="text-[15px] text-slate-500 font-medium leading-relaxed mb-8">Are you a student or staff in
+                        need
+                        of help? Post your job and find reliable students quickly.</p>
+                    <a href="post.html"
+                        class="block w-full text-center bg-[#004B44] text-white py-3.5 rounded-xl font-bold hover:bg-[#003a35] transition-all shadow-md">
+                        Post a Job
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-20 border-t border-slate-100 py-12 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <span class="text-2xl font-bold text-slate-300 font-brand">HireConnect</span>
+            <p class="mt-4 text-slate-400 text-sm font-medium">&copy; 2026 College of Engineering Perumon. All rights
+                reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        let allJobs = [];
+
+        async function fetchJobs() {
+            try {
+                const response = await fetch('/api/jobs');
+                allJobs = await response.json();
+                renderJobs(allJobs);
+            } catch (error) {
+                console.error('Error fetching jobs:', error);
+            }
+        }
+
+        function formatTimeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffInSeconds = Math.floor((now - date) / 1000);
+
+            if (diffInSeconds < 60) return 'Just now';
+
+            const diffInMinutes = Math.floor(diffInSeconds / 60);
+            if (diffInMinutes < 60) return `${diffInMinutes} ${diffInMinutes === 1 ? 'min' : 'mins'} ago`;
+
+            const diffInHours = Math.floor(diffInMinutes / 60);
+            if (diffInHours < 24) return `${diffInHours} ${diffInHours === 1 ? 'hour' : 'hours'} ago`;
+
+            const diffInDays = Math.floor(diffInHours / 24);
+            if (diffInDays < 7) return `${diffInDays} ${diffInDays === 1 ? 'day' : 'days'} ago`;
+
+            return date.toLocaleDateString();
+        }
+
+        function updateLiveTimes() {
+            document.querySelectorAll('.job-time-ago').forEach(el => {
+                const createdAt = el.getAttribute('data-created-at');
+                if (createdAt) {
+                    el.textContent = formatTimeAgo(createdAt);
+                }
+            });
+        }
+
+        function renderJobs(jobs) {
+            const container = document.getElementById('job-preview-container');
+            container.innerHTML = '';
+
+            if (jobs.length === 0) {
+                container.innerHTML = '<div class="text-center py-12 text-slate-400 font-bold">No jobs found matching your search.</div>';
+                return;
+            }
+
+            jobs.forEach(job => {
+                const card = document.createElement('div');
+                card.className = 'card p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border border-slate-100 hover:border-teal-200';
+
+                // Icon logic based on title
+                let iconBg = 'bg-orange-50 text-orange-600';
+                let iconPath = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />';
+                const title = job.jobTitle.toLowerCase();
+                if (title.includes('data') || title.includes('entry')) {
+                    iconBg = 'bg-blue-50 text-blue-600';
+                    iconPath = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />';
+                } else if (title.includes('event') || title.includes('fresher')) {
+                    iconBg = 'bg-teal-50 text-teal-600';
+                    iconPath = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.297A8.609 8.609 0 0110 21H4a2 2 0 01-2-2V7a2 2 0 012-2h1.586a1 1 0 01.707.293l1.414 1.414a1 1 0 00.707.293h3.586a1 1 0 01.707.293l1.414 1.414a1 1 0 00.707.293H15a1 1 0 00.707-.293l1.414-1.414a1 1 0 01.707-.293H20a2 2 0 012 2v12a2 2 0 01-2 2h-6a8.609 8.609 0 01-1-1.703V5.882" />';
+                } else if (title.includes('poster') || title.includes('design')) {
+                    iconBg = 'bg-purple-50 text-purple-600';
+                    iconPath = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a1 1 0 01.894.553L10.236 4H15a2 2 0 012 2v1a2 2 0 012 2v8a2 2 0 01-2 2h-1a2 2 0 01-2-2V8a2 2 0 00-2-2h-4.764l-1.618-3.236A1 1 0 006.59 2H5a2 2 0 00-2 2v12a4 4 0 004 4h10a4 4 0 004-4v-1M7 21h10" />';
+                }
+
+                card.innerHTML = `
+                    <div class="flex items-start space-x-5 flex-1 w-full">
+                        <div class="p-4 ${iconBg} rounded-2xl flex-shrink-0 shadow-sm">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">${iconPath}</svg>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-[20px] font-extrabold text-slate-800 tracking-tight leading-snug mb-0.5">${job.jobTitle}</h3>
+                            <div class="mb-3">
+                                <span class="text-xl font-black text-slate-900">Rs ${job.wage}</span>
+                                <span class="text-xs font-bold text-slate-400 ml-1">(total)</span>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3 text-slate-400 font-bold text-[11px] uppercase tracking-widest mb-4">
+                                <span class="flex items-center">
+                                    <span class="w-1 h-1 bg-slate-300 rounded-full mr-2"></span>
+                                    <span class="job-time-ago" data-created-at="${job.createdAt}">${formatTimeAgo(job.createdAt)}</span>
+                                </span>
+                                <span class="flex items-center"><span class="w-1 h-1 bg-slate-300 rounded-full mr-2"></span>${job.jobType || 'Flexible'}</span>
+                            </div>
+
+                            <div class="flex items-center justify-between mt-auto pt-4 border-t border-slate-50">
+                                <div class="flex items-center space-x-3">
+                                    <div class="h-10 w-10 rounded-full bg-teal-50 border border-teal-100 flex items-center justify-center overflow-hidden">
+                                        <svg class="h-6 w-6 text-teal-600 opacity-60" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-[13px] font-bold text-slate-800 leading-none">${job.providerName || 'Student Provider'}</p>
+                                        <div class="flex items-center space-x-2 mt-1">
+                                            <p class="text-[10px] text-slate-400 font-bold tracking-tight">ID: CEPXXXX${job._id.slice(-4)}</p>
+                                            <p class="text-[10px] text-teal-600 font-bold">+91 96550XXXX</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-auto mt-4 md:mt-0">
+                        <a href="details.html?id=${job._id}" class="block w-full text-center bg-[#004B44] text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-[#003a35] transition-all hover:scale-105 transform">View Details</a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const type = document.getElementById('jobTypeSelect').value;
+            const category = document.getElementById('categorySelect').value;
+
+            const filtered = allJobs.filter(job => {
+                const matchesQuery = job.jobTitle.toLowerCase().includes(query) ||
+                    (job.description && job.description.toLowerCase().includes(query));
+                const matchesType = !type || job.jobType === type;
+                const matchesCategory = !category || job.category === category;
+                return matchesQuery && matchesType && matchesCategory;
+            });
+
+            renderJobs(filtered);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchJobs();
+            // Update times every minute
+            setInterval(updateLiveTimes, 60000);
+        });
+    </script>
+</body>
+
+</html>

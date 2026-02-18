@@ -1,0 +1,106 @@
+/* Custom Styles for HireConnect Redesign */
+:root {
+    --color-primary: #004B44;
+    /* Deep Teal from screenshot */
+    --color-primary-hover: #003a35;
+    --color-accent: #0ec9ac;
+    /* Bright Teal/Mint */
+    --bg-mint: #f0fbf9;
+    /* Very light mint background */
+    --color-slate-900: #0f172a;
+    --color-slate-600: #475569;
+    --color-slate-400: #94a3b8;
+    --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: #f8fafc;
+    /* Light Slate for contrast */
+    color: var(--color-slate-900);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Card Styles */
+.card {
+    background: white;
+    border-radius: 24px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform: translateY(-4px);
+    border-color: var(--color-accent);
+}
+
+/* Button UI */
+.btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+    font-weight: 700;
+    padding: 0.875rem 1.75rem;
+    border-radius: 14px;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: -0.01em;
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-hover);
+    box-shadow: 0 8px 15px -3px rgba(0, 75, 68, 0.3);
+    transform: translateY(-1px);
+}
+
+.btn-outline {
+    background-color: white;
+    color: var(--color-slate-800);
+    border: 1px solid #e2e8f0;
+    font-weight: 700;
+    padding: 0.875rem 1.75rem;
+    border-radius: 14px;
+    transition: all 0.3s;
+}
+
+.btn-outline:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background-color: var(--bg-mint);
+    transform: translateY(-1px);
+}
+
+/* Form Elements */
+.input-field {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    outline: none;
+    transition: all 0.3s;
+    font-size: 0.9375rem;
+    font-weight: 500;
+}
+
+.input-field:focus {
+    background-color: #ffffff;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px rgba(0, 75, 68, 0.06);
+}
+
+/* Hero Section Utilities */
+.hero-gradient {
+    background: radial-gradient(43.84% 50% at 50% 50%, rgba(14, 201, 172, 0.05) 0%, rgba(255, 255, 255, 0) 100%), #ffffff;
+}
+
+.text-gradient {
+    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}

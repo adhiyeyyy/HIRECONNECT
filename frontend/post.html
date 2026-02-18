@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post a Job - HireConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-slate-100 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-slate-800">HireConnect</a>
+                </div>
+                <div class="flex items-center">
+                    <a href="login.html" id="authLink" class="text-slate-600 hover:text-teal-600 font-medium">Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-3xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div class="card p-8 md:p-10">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-slate-900">Post a Job</h1>
+                <p class="text-slate-500 mt-2">Connect with talented students from CEP.</p>
+            </div>
+
+            <form id="postJobForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Job Title</label>
+                        <input type="text" id="jobTitle" required class="input-field" placeholder="Example: Assignment">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Job Type</label>
+                        <select id="jobType" class="input-field">
+                            <option value="Part-time" selected>Part-time</option>
+                            <option value="Internship">Internship</option>
+                            <option value="Full-time">Full-time</option>
+                            <option value="Freelance">Freelance</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Provider Name</label>
+                        <input type="text" id="providerName" required class="input-field" placeholder="Your Name">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Contact Number</label>
+                        <input type="tel" id="contactNumber" required class="input-field"
+                            placeholder="Your Phone Number">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Contact Email</label>
+                    <input type="email" id="email" required class="input-field" placeholder="yourname@gmail.com">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Upload College ID Card</label>
+                    <div id="dropzone"
+                        class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-lg hover:border-teal-500 transition-colors cursor-pointer bg-white relative overflow-hidden">
+                        <input id="collegeID" name="collegeID" type="file" class="hidden" required accept="image/*">
+                        <div class="space-y-1 text-center" id="upload-placeholder">
+                            <svg class="mx-auto h-12 w-12 text-slate-400" stroke="currentColor" fill="none"
+                                viewBox="0 0 48 48" aria-hidden="true">
+                                <path
+                                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="flex text-sm text-slate-600 justify-center">
+                                <span class="relative font-semibold text-teal-600">Upload a file</span>
+                                <p class="pl-1">or drag and drop</p>
+                            </div>
+                            <p class="text-xs text-slate-500">PNG, JPG, GIF up to 10MB</p>
+                        </div>
+                        <img id="preview"
+                            class="absolute inset-0 w-full h-full object-contain hidden bg-white rounded-lg p-2">
+                        <button type="button" id="remove-img"
+                            class="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hidden hover:bg-red-600 shadow-md">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Wage/Salary Range</label>
+                    <input type="text" id="wage" required class="input-field" placeholder="₹5,000 - ₹10,000 / month">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Job Description</label>
+                    <textarea id="description" rows="5" required class="input-field"
+                        placeholder="Describe the job responsibilities and requirements..."></textarea>
+                </div>
+
+                <div class="bg-teal-50 p-4 rounded-lg border border-teal-100 flex items-start space-x-3">
+                    <svg class="h-6 w-6 text-teal-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                        <p class="text-sm text-teal-800 font-medium">Payment Required</p>
+                        <p class="text-xs text-teal-600 mt-1">Posting a job costs ₹20. You will be redirected to the
+                            payment page after submission.</p>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary w-full py-4 text-lg">Post and Proceed to Payment</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Image upload and preview logic
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('collegeID');
+        const preview = document.getElementById('preview');
+        const placeholder = document.getElementById('upload-placeholder');
+        const removeBtn = document.getElementById('remove-img');
+
+        // Trigger file input on click
+        dropzone.addEventListener('click', (e) => {
+            if (e.target.closest('#remove-img')) return;
+            fileInput.click();
+        });
+
+        // Handle file selection
+        fileInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    preview.src = event.target.result;
+                    preview.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                    removeBtn.classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Remove image logic
+        removeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            fileInput.value = '';
+            preview.src = '';
+            preview.classList.add('hidden');
+            placeholder.classList.remove('hidden');
+            removeBtn.classList.add('hidden');
+        });
+
+        // Drag and drop logic
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('border-teal-500', 'bg-teal-50');
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.classList.remove('border-teal-500', 'bg-teal-50');
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('border-teal-500', 'bg-teal-50');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                fileInput.files = e.dataTransfer.files;
+                const event = new Event('change');
+                fileInput.dispatchEvent(event);
+            }
+        });
+
+        document.getElementById('postJobForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user = checkAuth();
+            if (!user) {
+                alert('Please login first to post a job.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Convert image to base64 for submission (simple approach for now)
+            const collegeIDImg = preview.src;
+
+            const jobData = {
+                jobTitle: document.getElementById('jobTitle').value,
+                jobType: document.getElementById('jobType').value,
+                providerName: document.getElementById('providerName').value,
+                contactNumber: document.getElementById('contactNumber').value,
+                email: document.getElementById('email').value,
+                wage: document.getElementById('wage').value,
+                description: document.getElementById('description').value,
+                collegeID: collegeIDImg,
+                publisherEmail: user.email
+            };
+
+            // In a real app, we would save to temp storage and redirect to payment
+            sessionStorage.setItem('pendingJob', JSON.stringify(jobData));
+            window.location.href = 'payment.html?type=post_job';
+        });
+    </script>
+</body>
+
+</html>

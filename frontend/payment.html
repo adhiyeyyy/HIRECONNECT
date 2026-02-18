@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - HireConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-slate-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-slate-800">HireConnect</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-2xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div class="card p-8 md:p-12 text-center">
+            <h1 class="text-3xl font-bold text-slate-900 mb-2">Complete Payment</h1>
+            <p class="text-slate-500 mb-8">Scan the QR code below to pay ₹20</p>
+
+            <div class="bg-white p-6 rounded-2xl shadow-inner border border-slate-100 inline-block mb-8">
+                <!-- UPI QR Code -->
+                <div id="qr-container"
+                    class="w-72 h-auto bg-white rounded-lg flex flex-col items-center justify-center p-4">
+                    <!-- In a real app, this would be your QR code image -->
+                    <div class="mb-4">
+                        <img src="qr_code.png" alt="UPI QR Code" class="w-64 h-64 object-contain shadow-sm rounded-lg"
+                            onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=adhichanchu123@oksbi&pn=Adithyan%20S&am=20&cu=INR';">
+                    </div>
+                    <div class="text-center">
+                        <p class="font-bold text-slate-800 text-lg">Adithyan S</p>
+                        <p class="text-slate-500 text-sm italic font-medium">adhichanchu123@oksbi</p>
+                        <p
+                            class="mt-2 text-xs text-teal-600 font-bold bg-teal-50 px-3 py-1 rounded-full border border-teal-100 uppercase tracking-wider">
+                            ₹20.00 ONLY</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6 text-left max-w-md mx-auto">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Transaction ID (UTR Number)</label>
+                    <input type="text" id="utr" required class="input-field"
+                        placeholder="Enter the 12-digit UTR number">
+                    <p class="text-xs text-slate-400 mt-2 italic">Enter the unique transaction ID from your payment app
+                        (Google Pay, PhonePe, etc.) for verification.</p>
+                </div>
+
+                <div id="form-feedback" class="hidden p-4 rounded-lg text-sm text-center"></div>
+
+                <button id="submitPayment" class="btn-primary w-full py-4 text-lg">Verify & Post Job</button>
+            </div>
+
+            <p class="mt-8 text-sm text-slate-400">
+                <span class="font-bold text-slate-500">Note:</span> Verification is processed by our team. Your job will
+                be published immediately after the UTR is verified.
+            </p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('submitPayment').addEventListener('click', async () => {
+            const utr = document.getElementById('utr').value;
+            const feedback = document.getElementById('form-feedback');
+
+            if (!utr || utr.length < 5) {
+                alert('Please enter a valid Transaction ID.');
+                return;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const type = urlParams.get('type');
+            const jobId = urlParams.get('jobId');
+            const user = checkAuth();
+
+            if (!user) {
+                alert('Session expired. Please login again.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            feedback.className = "p-4 rounded-lg text-sm text-center bg-teal-50 text-teal-800";
+            feedback.innerHTML = "Processing your submission...";
+            feedback.classList.remove('hidden');
+
+            const paymentData = {
+                email: user.email,
+                utr: utr,
+                purpose: type,
+                jobId: jobId || '',
+                amount: 20
+            };
+
+            try {
+                // Submit payment record
+                const payResponse = await fetch('/api/payments/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(paymentData)
+                });
+
+                if (payResponse.ok) {
+                    // If it's a new job post, we also need to submit the job data
+                    if (type === 'post_job') {
+                        const pendingJob = JSON.parse(sessionStorage.getItem('pendingJob'));
+                        if (pendingJob) {
+                            const jobResponse = await fetch('/api/jobs/create', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    jobData: pendingJob,
+                                    email: user.email,
+                                    utr: utr // Link job to this transaction
+                                })
+                            });
+
+                            if (jobResponse.ok) {
+                                sessionStorage.removeItem('pendingJob');
+                                alert('Job posted and payment submitted for verification! Your job will appear on the site once verified.');
+                                window.location.href = 'index.html';
+                                return;
+                            }
+                        }
+                    } else if (type === 'view_job') {
+                        alert('Payment submitted! You will see the job details once verified.');
+                        window.location.href = `details.html?id=${jobId}`;
+                        return;
+                    }
+
+                    alert('Payment submitted successfully!');
+                    window.location.href = 'index.html';
+                } else {
+                    const err = await payResponse.json();
+                    feedback.className = "p-4 rounded-lg text-sm text-center bg-red-50 text-red-800";
+                    feedback.innerHTML = "Error: " + (err.error || "Submission failed");
+                }
+            } catch (error) {
+                console.error('Submission failed:', error);
+                feedback.className = "p-4 rounded-lg text-sm text-center bg-red-50 text-red-800";
+                feedback.innerHTML = "Connection error. Please try again.";
+            }
+        });
+    </script>
+</body>
+
+</html>

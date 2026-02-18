@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - HireConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl font-bold text-slate-800">HireConnect Admin</h1>
+            <p class="text-slate-500 mt-2 font-medium uppercase tracking-widest text-xs">Secure Access Only</p>
+        </div>
+
+        <div class="card p-8 md:p-10">
+            <h2 class="text-xl font-bold text-slate-900 mb-6">Administrator Login</h2>
+
+            <form id="adminLoginForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Username</label>
+                    <input type="text" id="username" required class="input-field" placeholder="Enter admin username">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                    <input type="password" id="password" required class="input-field" placeholder="••••••••">
+                </div>
+
+                <div id="login-feedback"
+                    class="hidden p-3 rounded-lg text-sm text-center bg-red-50 text-red-800 border border-red-100">
+                </div>
+
+                <button type="submit" class="btn-primary w-full py-3 text-lg">Login to Dashboard</button>
+            </form>
+        </div>
+
+        <p class="mt-8 text-center text-sm text-slate-400">
+            Forgot credentials? Contact system developer.
+        </p>
+    </div>
+
+    <script>
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const feedback = document.getElementById('login-feedback');
+
+            feedback.classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    sessionStorage.setItem('adminToken', data.token);
+                    window.location.href = 'admin.html';
+                } else {
+                    const data = await response.json();
+                    feedback.textContent = data.error || 'Login failed. Please check credentials.';
+                    feedback.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                feedback.textContent = 'Connection error. Try again.';
+                feedback.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+
+</html>

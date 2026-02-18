@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Details - HireConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-slate-50 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-slate-800">HireConnect</a>
+                </div>
+                <div class="flex items-center">
+                    <a href="login.html" id="authLink" class="text-slate-600 hover:text-teal-600 font-medium">Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div id="job-details" class="card p-8 md:p-12">
+            <!-- Details will be loaded here -->
+            <div class="animate-pulse flex flex-col space-y-4">
+                <div class="h-8 bg-slate-200 rounded w-1/2"></div>
+                <div class="h-4 bg-slate-200 rounded w-1/4"></div>
+                <div class="h-32 bg-slate-200 rounded w-full mt-8"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        async function loadDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            const user = checkAuth();
+            const email = user ? user.email : '';
+
+            try {
+                const response = await fetch(`/api/jobs/${id}?email=${email}`);
+                const job = await response.json();
+                const container = document.getElementById('job-details');
+
+                if (job.isLocked) {
+                    container.innerHTML = `
+                        <div class="text-center py-12">
+                            <h1 class="text-2xl font-bold text-slate-900">${job.jobTitle}</h1>
+                            <div class="mt-8 p-6 bg-slate-50 rounded-xl border border-slate-200 max-w-sm mx-auto">
+                                <h2 class="font-bold text-slate-800">Access Denied</h2>
+                                <p class="text-sm text-slate-500 mt-2">Please login and complete verification to view this job.</p>
+                                <a href="login.html" class="mt-6 block btn-primary py-3">Login to Continue</a>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let publisherSection = '';
+                if (job.isPublisherInfoLocked) {
+                    publisherSection = `
+                        <div class="mt-12 p-8 bg-teal-50 rounded-2xl border border-teal-100 text-center">
+                            <div class="inline-flex items-center justify-center p-3 bg-white rounded-full shadow-sm mb-4">
+                                <svg class="h-8 w-8 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900">Unlock Publisher Details</h3>
+                            <p class="text-slate-500 mt-2 max-w-sm mx-auto">Pay ₹20 to view the contact details and name of the person who posted this assignment.</p>
+                            <a href="payment.html?type=view_details&jobId=${job._id}" class="mt-6 inline-block btn-primary px-8 py-3">Pay ₹20 to Unlock Details</a>
+                        </div>
+                    `;
+                } else {
+                    publisherSection = `
+                        <div class="mt-12 p-8 bg-slate-50 rounded-2xl border border-slate-200">
+                            <h3 class="text-xl font-bold text-slate-900 mb-6">Publisher Information</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div>
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Posted By</p>
+                                    <p class="text-lg font-bold text-slate-900">${job.providerName}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Contact Email</p>
+                                    <p class="text-lg font-bold text-slate-900">${job.email}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Contact Number</p>
+                                    <p class="text-lg font-bold text-slate-900">${job.contactNumber}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">College ID Card</p>
+                                    <div class="mt-2 border border-slate-200 rounded-lg overflow-hidden bg-slate-100 min-h-[100px] flex items-center justify-center">
+                                        <img src="${job.collegeID}" alt="College ID Card" class="max-w-full h-auto" onerror="this.parentElement.innerHTML='<p class=\"text-xs text-slate-400\">ID Card Image Not Available</p>'">
+                                    </div>
+                                    <button onclick="window.open('${job.collegeID}', '_blank')" class="mt-2 text-teal-600 text-xs font-bold hover:underline">Open Original Image ↗</button>
+                                </div>
+                            </div>
+                            <div class="mt-8 pt-8 border-t border-slate-200">
+                                <a href="mailto:${job.email}" class="btn-primary w-full block text-center py-4">Contact for Assignment</a>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                container.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-start md:justify-between mb-8 border-b border-slate-100 pb-8">
+                        <div>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-teal-100 text-teal-800 uppercase tracking-wider mb-4">
+                                ${job.jobType}
+                            </span>
+                            <h1 class="text-4xl font-extrabold text-slate-900">${job.jobTitle}</h1>
+                            <div class="flex items-center mt-4 text-slate-500">
+                                <svg class="h-5 w-5 mr-1.5 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span class="text-lg font-bold text-slate-900">${job.wage}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-8">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900 mb-4">Description</h2>
+                            <div class="prose max-w-none text-slate-600 leading-relaxed font-sans text-lg">
+                                ${job.description.replace(/\n/g, '<br>')}
+                            </div>
+                        </div>
+
+                        ${publisherSection}
+                    </div>
+                `;
+            } catch (error) {
+                container.innerHTML = `<p class="text-center text-red-500 font-bold p-8">Error loading job details. Please try again.</p>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadDetails);
+    </script>
+</body>
+
+</html>
