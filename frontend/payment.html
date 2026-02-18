@@ -103,7 +103,7 @@
 
             try {
                 // Submit payment record
-                const payResponse = await fetch('/api/payments/submit', {
+                const payResponse = await fetch(`${API_BASE_URL}/api/payments/submit`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(paymentData)
@@ -114,7 +114,7 @@
                     if (type === 'post_job') {
                         const pendingJob = JSON.parse(sessionStorage.getItem('pendingJob'));
                         if (pendingJob) {
-                            const jobResponse = await fetch('/api/jobs/create', {
+                            const jobResponse = await fetch(`${API_BASE_URL}/api/jobs/create`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({

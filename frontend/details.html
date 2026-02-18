@@ -45,7 +45,7 @@
             const email = user ? user.email : '';
 
             try {
-                const response = await fetch(`/api/jobs/${id}?email=${email}`);
+                const response = await fetch(`${API_BASE_URL}/api/jobs/${id}?email=${email}`);
                 const job = await response.json();
                 const container = document.getElementById('job-details');
 

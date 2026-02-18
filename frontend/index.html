@@ -202,7 +202,7 @@
 
         async function fetchJobs() {
             try {
-                const response = await fetch('/api/jobs');
+                const response = await fetch(`${API_BASE_URL}/api/jobs`);
                 allJobs = await response.json();
                 renderJobs(allJobs);
             } catch (error) {

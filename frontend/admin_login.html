@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
 </head>
 
 <body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
@@ -54,7 +55,7 @@
             feedback.classList.add('hidden');
 
             try {
-                const response = await fetch('/api/admin/login', {
+                const response = await fetch(`${API_BASE_URL}/api/admin/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })

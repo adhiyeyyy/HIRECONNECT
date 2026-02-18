@@ -51,7 +51,7 @@
     <script>
         async function loadJobs() {
             try {
-                const response = await fetch('/api/jobs');
+                const response = await fetch(`${API_BASE_URL}/api/jobs`);
                 const jobs = await response.json();
                 const container = document.getElementById('jobs-list');
 

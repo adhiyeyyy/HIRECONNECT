@@ -67,11 +67,13 @@ router.get("/", async (req, res) => {
 router.post("/submit", async (req, res) => {
     try {
         const { email, amount, purpose, jobId, utr } = req.body;
+        console.log("Payment submission attempt:", { email, purpose, utr });
 
         // Basic check if UTR already exists to prevent double submission
         if (utr) {
             const existing = await Payment.findOne({ utr });
             if (existing) {
+                console.log("Payment submission failed: UTR already exists -", utr);
                 return res.status(400).json({ error: "This Transaction ID has already been submitted." });
             }
         }
@@ -86,9 +88,11 @@ router.post("/submit", async (req, res) => {
         });
 
         const savedPayment = await newPayment.save();
+        console.log("Payment record saved:", savedPayment._id);
         res.status(201).json(savedPayment);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error("Payment submission route error:", err);
+        res.status(500).json({ error: "Payment submission failed", details: err.message });
     }
 });
 

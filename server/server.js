@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -14,37 +15,45 @@ app.use(cors());
 // Database Connection
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://antigravity:ANTIGRAVITY123@cluster1.c62bavc.mongodb.net/hireconnect";
 
-// Enhanced MongoDB Connection logic for Serverless
+// Cached connection promise for serverless
+let cachedConnection = null;
+
 const connectDB = async () => {
-    if (mongoose.connection.readyState >= 1) {
-        console.log("Using existing MongoDB connection");
-        return;
+    if (cachedConnection) {
+        return cachedConnection;
     }
 
     console.log("Attempting to connect to MongoDB...");
-    try {
-        await mongoose.connect(MONGODB_URI, {
-            serverSelectionTimeoutMS: 5000,
-        });
-        mongoose.set('bufferCommands', false); // Disable buffering globally once connected
+    cachedConnection = mongoose.connect(MONGODB_URI, {
+        serverSelectionTimeoutMS: 5000,
+    }).then(conn => {
         console.log("MongoDB Connected Successfully");
-    } catch (err) {
-        console.error("MongoDB Connection Error Details:", {
+        mongoose.set('bufferCommands', false);
+        return conn;
+    }).catch(err => {
+        cachedConnection = null; // Reset on failure
+        console.error("MongoDB Connection Error:", {
             message: err.message,
             code: err.code,
             name: err.name
         });
-        // Don't throw, let the app handle it or retry later
-    }
+        throw err;
+    });
+
+    return cachedConnection;
 };
 
-// Connect immediately on startup (for non-serverless environments)
-connectDB();
-
-// Middleware to ensure DB is connected for every request (essential for serverless)
+// Middleware to ensure DB is connected for every request
 app.use(async (req, res, next) => {
-    await connectDB();
-    next();
+    try {
+        await connectDB();
+        next();
+    } catch (err) {
+        res.status(503).json({
+            error: "Database Connection Error",
+            details: process.env.NODE_ENV === 'production' ? "The server is temporarily unable to connect to the database." : err.message
+        });
+    }
 });
 
 // Routes

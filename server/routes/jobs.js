@@ -7,6 +7,7 @@ const Payment = require("../models/Payment");
 router.post("/create", async (req, res) => {
     try {
         const { email, jobData, utr } = req.body;
+        console.log("Job creation attempt by:", email);
 
         const newJob = new Job({
             ...jobData,
@@ -14,9 +15,11 @@ router.post("/create", async (req, res) => {
         });
 
         const savedJob = await newJob.save();
+        console.log("Job record saved:", savedJob._id);
 
         // Link the job ID to the pending payment if jobId wasn't provided yet
         if (utr) {
+            console.log("Linking job to payment UTR:", utr);
             await Payment.findOneAndUpdate(
                 { utr: utr },
                 { jobId: savedJob._id }
@@ -25,7 +28,8 @@ router.post("/create", async (req, res) => {
 
         res.status(201).json(savedJob);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error("Job creation route error:", err);
+        res.status(500).json({ error: "Job creation failed", details: err.message });
     }
 });
 
